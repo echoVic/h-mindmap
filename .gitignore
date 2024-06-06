@@ -21,3 +21,64 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Folders to ignore
+/target
+**/*.rs.bk
+
+# If you use Cargo workspaces
+# !/target
+
+# MSVC Windows build cache/generated files
+*.pdb
+
+# Executable, such as benchmarks
+*.exe
+*.exe.*
+
+# Other temporary files
+*.log
+*.tmp
+*.temp
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+*~
+.*.un~
+.metadata_never_index
+.Spotlight-V100
+.Trashes
+
+# Node related if you're working with tools like wasm-pack or npm/yarn
+node_modules/
+dist/
+.npm/
+.yarn/
+yarn-error.log
+
+# IDE specific
+# JetBrains IDEs
+.idea/
+# Visual Studio Code
+.vscode/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+# Vim
+*.swp
+*.swo
+*~
+# Emacs
+*~
+\#*\#
+.\#*
+
+# `wasm-pack` generated artifacts
+pkg/
+*.wasm
+
+# Others
+*.lock
+*.rs.bk
