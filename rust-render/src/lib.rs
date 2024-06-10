@@ -1,18 +1,33 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{HtmlCanvasElement, CanvasRenderingContext2d};
+use web_sys::{HtmlCanvasElement, CanvasRenderingContext2d, Element};
 use wasm_bindgen::JsCast;
 
 #[wasm_bindgen]
-pub fn render_mindmap() {
+pub fn render_mindmap(container_id: &str) {
     web_sys::console::log_1(&"Rendering mindmap...".into());
 
-    // 获取 Canvas 元素和 2D 渲染上下文
+    // 获取 DOM 元素
     let window = web_sys::window().expect("should have a window in this context");
     let document = window.document().expect("window should have a document");
-    let canvas = document.get_element_by_id("mindmap-canvas")
-        .expect("document should have a #mindmap-canvas on it")
-        .dyn_into::<HtmlCanvasElement>()
-        .expect("#mindmap-canvas should be an HtmlCanvasElement");
+    let container = document.get_element_by_id(container_id)
+        .expect(&format!("document should have a #{container_id} on it"));
+
+    // 检查是否已有 Canvas 元素存在
+    let canvas = if let Some(existing_canvas) = document.get_element_by_id("mindmap-canvas") {
+        existing_canvas.dyn_into::<HtmlCanvasElement>().unwrap()
+    } else {
+        // 创建 Canvas 元素
+        let new_canvas = document.create_element("canvas")
+            .expect("should be able to create canvas element")
+            .dyn_into::<HtmlCanvasElement>()
+            .expect("canvas should be an HtmlCanvasElement");
+        
+        new_canvas.set_width(800);
+        new_canvas.set_height(600);
+        new_canvas.set_id("mindmap-canvas");
+        container.append_child(&new_canvas).expect("should be able to append canvas to container");
+        new_canvas
+    };
 
     let context = canvas
         .get_context("2d")
@@ -20,6 +35,9 @@ pub fn render_mindmap() {
         .expect("context should be available")
         .dyn_into::<CanvasRenderingContext2d>()
         .expect("context should be a CanvasRenderingContext2d");
+
+    // 清除之前的绘制内容
+    context.clear_rect(0.0, 0.0, canvas.width().into(), canvas.height().into());
 
     // 定义节点数据和位置（简化示例）
     let nodes = vec![
@@ -81,7 +99,6 @@ fn draw_child_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text: &st
     context.begin_path(); // 确保开始新的路径
     let width = 80.0;
     let height = 30.0;
-    let radius = 10.0;
 
     context.set_font("15px Arial");
     context.set_fill_style(&"black".into());

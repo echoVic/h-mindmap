@@ -7,13 +7,5 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="module">
-    import init, { render_mindmap } from './rust-wasm/rust_render.js';
-    async function run() {
-      await init();
-      render_mindmap();
-    }
-    run().catch(console.error);
-  </script>
 </body>
 </html>

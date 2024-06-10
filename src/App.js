@@ -7,7 +7,7 @@ function App() {
   return (
     <RecoilRoot>
       <div className="App">
-        <MindMap />
+      <MindMap containerId="mindmap-container" />
       </div>
     </RecoilRoot>
   );
