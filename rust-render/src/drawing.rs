@@ -43,17 +43,30 @@ pub fn draw_child_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text:
     context.fill_text(text, x, y).unwrap();
 }
 
-pub fn draw_curve(context: &CanvasRenderingContext2d, x1: f64, y1: f64, x2: f64, y2: f64, color: &str) {
+pub fn draw_curve(context: &CanvasRenderingContext2d, from_x: f64, from_y: f64, to_x: f64, to_y: f64, color: &str) {
     context.begin_path();
     context.set_stroke_style(&color.into());
     context.set_line_width(2.0);
 
+    // 假设子节点是 80x30 大小
+    let node_width = 80.0;
+    let node_height = 30.0;
+
+    // 计算根节点的边缘坐标
+    let start_x = from_x;
+    let start_y = from_y + 50.0 / 2.0;  // 根节点高度的一半
+
+    // 计算子节点的边缘坐标
+    let end_x = to_x;
+    let end_y = to_y - node_height / 2.0;
+
     // 绘制贝塞尔曲线
-    let cp1x = x1;
-    let cp1y = (y1 + y2) / 2.0;
-    let cp2x = x2;
-    let cp2y = (y1 + y2) / 2.0;
-    context.move_to(x1, y1);
-    context.bezier_curve_to(cp1x, cp1y, cp2x, cp2y, x2, y2);
+    let cp1x = start_x;
+    let cp1y = (start_y + end_y) / 2.0;
+    let cp2x = end_x;
+    let cp2y = (start_y + end_y) / 2.0;
+
+    context.move_to(start_x, start_y);
+    context.bezier_curve_to(cp1x, cp1y, cp2x, cp2y, end_x, end_y);
     context.stroke();
 }
