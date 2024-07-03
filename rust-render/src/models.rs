@@ -4,6 +4,7 @@ pub struct Node {
     pub x: f64,
     pub y: f64,
     pub is_root: bool,
+    pub selected: bool,
 }
 
 pub struct MindMap {
@@ -14,7 +15,7 @@ pub struct MindMap {
 impl MindMap {
     pub fn new() -> Self {
         MindMap {
-            nodes: vec![Node { id: 0, name: "Root".to_string(), x: 300.0, y: 100.0, is_root: true }],
+            nodes: vec![Node { id: 0, name: "Root".to_string(), x: 300.0, y: 100.0, is_root: true, selected: false }],
             next_id: 1,
         }
     }
@@ -26,7 +27,23 @@ impl MindMap {
             x,
             y,
             is_root,
+            selected: false,
         });
         self.next_id += 1;
+    }
+
+    pub fn select_node(&mut self, node_id: usize) {
+        for node in &mut self.nodes {
+            node.selected = node.id == node_id;
+        }
+    }
+
+    pub fn move_selected_node(&mut self, dx: f64, dy: f64) {
+        for node in &mut self.nodes {
+            if node.selected {
+                node.x += dx;
+                node.y += dy;
+            }
+        }
     }
 }

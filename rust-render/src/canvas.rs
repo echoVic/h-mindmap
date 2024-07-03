@@ -1,5 +1,5 @@
 use wasm_bindgen::JsCast;
-use web_sys::{HtmlCanvasElement, Element, Document};
+use web_sys::{HtmlCanvasElement, Document};
 
 pub fn create_or_get_canvas(document: &Document, container_id: &str) -> Result<HtmlCanvasElement, String> {
     // 获取容器元素
