@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# H-MindMap 项目
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+这是一个用于渲染思维导图的项目，Rust 用于后端渲染，而 React 用于前端显示。
 
-## Available Scripts
+## 项目结构
 
-In the project directory, you can run:
+### 目录结构
+```
+📦h-mindmap
+┣ 📂.git                    # Git版本控制
+┃ ┣ 📂branches              # Git分支
+...[其他.git文件夹和文件]...
+┣ 📂public                  # 公共资源文件
+┃ ┣ 📜favicon.ico           # 网站图标
+┃ ┣ 📜index.html            # 入口 HTML 文件
+┃ ┣ 📜logo192.png           # 192x192 尺寸的logo
+┃ ┣ 📜logo512.png           # 512x512 尺寸的logo
+┃ ┣ 📜manifest.json         # PWA配置文件
+┃ ┗ 📜robots.txt            # 爬虫协议文件
+┣ 📂rust-render             # Rust 渲染逻辑
+┃ ┣ 📂src
+┃ ┃ ┣ 📜canvas.rs           # 画布管理
+┃ ┃ ┣ 📜drawing.rs          # 绘图相关
+┃ ┃ ┣ 📜events.rs           # 事件处理
+┃ ┃ ┣ 📜lib.rs              # 入口库文件
+┃ ┃ ┗ 📜models.rs           # 数据模型
+┃ ┣ 📂target               # 编译生成文件
+┃ ┃ ┣ ...                  # 具体内容省略
+┃ ┗ 📜Cargo.toml            # Rust 项目配置
+┣ 📂src                     # React 前端源码
+┃ ┣ 📂components            # React 组件
+┃ ┃ ┣ 📜Link.js             # 链接组件
+┃ ┃ ┣ 📜MindMap.js          # 思维导图组件
+┃ ┃ ┗ 📜Node.js             # 节点组件
+┃ ┣ 📂store                 # 状态管理
+┃ ┃ ┗ 📜index.js            # Redux或上下文API配置
+┃ ┣ 📜App.css               # 应用样式
+┃ ┣ 📜App.js                # 应用入口
+┃ ┣ 📜App.test.js           # 测试文件
+┃ ┣ 📜index.css             # 全局样式
+┃ ┣ 📜index.js              # 应用主入口
+┃ ┣ 📜logo.svg              # SVG 格式的 logo
+┃ ┣ 📜reportWebVitals.js    # 性能监控
+┃ ┗ 📜setupTests.js         # 测试配置
+┣ 📜.eslintignore           # ESLint 忽略规则
+┣ 📜.gitignore              # Git 忽略规则
+┣ 📜README.md               # 项目说明文件
+┣ 📜package.json            # 项目依赖及脚本
+┗ 📜pnpm-lock.yaml          # 依赖锁定文件
 
-### `npm start`
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 相关命令
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- `pnpm install` - 安装前端依赖
+- `cargo build` - 编译 Rust 代码
+- `pnpm start` - 启动 React 开发服务器
+- `cargo run` - 运行 Rust 程序
 
-### `npm test`
+## 项目说明
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 安装
 
-### `npm run build`
+1. 克隆项目仓库：
+    ```bash
+    git clone https://github.com/your-github-repo/h-mindmap.git
+    cd h-mindmap
+    ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. 安装前端依赖：
+    ```bash
+    pnpm install
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. 编译和运行 Rust 代码：
+    ```bash
+    cd rust-render
+    cargo build
+    cargo run
+    ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. 启动 React 开发服务器：
+    ```bash
+    cd ..
+    pnpm start
+    ```
 
-### `npm run eject`
+### 使用说明
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. 打开浏览器并访问 `http://localhost:3000`。
+2. 在网页中操作思维导图，体验实时渲染效果。
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 贡献
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+欢迎提交问题和PRs！
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 许可
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT License
