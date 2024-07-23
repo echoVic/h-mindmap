@@ -3,6 +3,8 @@ use wasm_bindgen::JsCast;
 use web_sys::{console, HtmlCanvasElement, CanvasRenderingContext2d, MouseEvent};
 use crate::{MINDMAP, drawing::render_mindmap};
 
+static mut IS_DRAGGING: bool = false;
+
 // 添加事件监听器
 pub fn add_event_listeners(canvas: &HtmlCanvasElement) {
     // 防御性代码，确保类型正确性
@@ -57,9 +59,6 @@ fn is_html_canvas_element(obj: &JsValue) -> bool {
 
 // 点击事件处理程序
 fn on_canvas_click(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(), JsValue> {
-    // 输出调试信息
-    console::log_1(&"on_canvas_click called".into());
-
     // 防御性代码，确保类型正确性
     if !is_html_canvas_element(&canvas) {
         return Err(JsValue::from_str("Object is not an HtmlCanvasElement"));
@@ -73,7 +72,7 @@ fn on_canvas_click(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(), J
     let x = event.client_x() as f64 - rect.left();
     let y = event.client_y() as f64 - rect.top();
 
-    // 为调试打印位置
+    // 输出点击位置用于调试
     console::log_2(&"Mouse clicked at:".into(), &format!("({}, {})", x, y).into());
 
     // 尝试借用 mindmap 并选择节点
@@ -95,7 +94,7 @@ fn on_canvas_click(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(), J
         })
     };
 
-    // 若找到节点，进行修改
+    // 处理选中和取消选中节点
     if let Some(node_id) = selected_node_id {
         unsafe {
             if let Some(ref mut mindmap) = MINDMAP {
@@ -104,7 +103,25 @@ fn on_canvas_click(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(), J
             }
         }
     } else {
-        console::log_1(&"No node selected".into());
+        unsafe {
+            if let Some(ref mut mindmap) = MINDMAP {
+                mindmap.clear_selection();
+                console::log_1(&"Cleared selection".into());
+            }
+        }
+    }
+
+    // 重新渲染
+    unsafe {
+        if let Some(ref mindmap) = MINDMAP {
+            let context = canvas
+                .get_context("2d")
+                .map_err(|_| JsValue::from_str("Failed to get 2d context"))?
+                .ok_or_else(|| JsValue::from_str("Context should be available"))?
+                .dyn_into::<CanvasRenderingContext2d>()
+                .map_err(|_| JsValue::from_str("Context should be a CanvasRenderingContext2d"))?;
+            render_mindmap(&context, mindmap);
+        }
     }
 
     Ok(())
@@ -127,6 +144,7 @@ fn on_canvas_mousedown(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(
     unsafe {
         LAST_X = x;
         LAST_Y = y;
+        IS_DRAGGING = true;
     }
 
     Ok(())
@@ -147,7 +165,7 @@ fn on_canvas_mousemove(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(
     static mut LAST_Y: f64 = 0.0;
 
     unsafe {
-        if event.buttons() & 1 == 1 {
+        if IS_DRAGGING {
             let dx = x - LAST_X;
             let dy = y - LAST_Y;
 
@@ -173,13 +191,14 @@ fn on_canvas_mousemove(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(
     Ok(())
 }
 
-fn on_canvas_mouseup(_event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(), JsValue> {
+fn on_canvas_mouseup(event: MouseEvent, canvas: HtmlCanvasElement) -> Result<(), JsValue> {
     // 防御性代码，确保类型正确性
     if !is_html_canvas_element(&canvas) {
         return Err(JsValue::from_str("Object is not an HtmlCanvasElement"));
     }
 
     unsafe {
+        IS_DRAGGING = false;
         if let Some(ref mindmap) = MINDMAP {
             let context = canvas
                 .get_context("2d")

@@ -38,6 +38,12 @@ impl MindMap {
         }
     }
 
+    pub fn clear_selection(&mut self) {
+        for node in &mut self.nodes {
+            node.selected = false;
+        }
+    }
+
     pub fn move_selected_node(&mut self, dx: f64, dy: f64) {
         for node in &mut self.nodes {
             if node.selected {

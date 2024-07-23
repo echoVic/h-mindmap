@@ -1,7 +1,19 @@
 use web_sys::CanvasRenderingContext2d;
 use crate::models::MindMap;
 
-pub fn draw_root_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text: &str) {
+pub fn draw_root_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text: &str, selected: bool) {
+    // 绘制高亮包围框
+    if selected {
+        context.begin_path();
+        context.set_stroke_style(&"red".into());
+        context.set_line_width(4.0);
+        
+        let width = 100.0 + 10.0;  // 增加一点点大小给包围框
+        let height = 50.0 + 10.0;
+        context.rect(x - width / 2.0, y - height / 2.0, width, height);
+        context.stroke();
+    }
+
     context.begin_path();
     context.set_fill_style(&"#D3D3D3".into()); // 浅灰色背景
     context.set_stroke_style(&"black".into());
@@ -42,10 +54,29 @@ pub fn draw_root_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text: 
     context.fill_text(text, x, y).unwrap();
 }
 
-pub fn draw_child_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text: &str) {
+pub fn draw_child_node(context: &CanvasRenderingContext2d, x: f64, y: f64, text: &str, selected: bool) {
+    // 绘制高亮包围框
+    if selected {
+        context.begin_path();
+        context.set_stroke_style(&"red".into());
+        context.set_line_width(4.0);
+        
+        let width = 80.0 + 10.0;  // 增加一点点大小给包围框
+        let height = 30.0 + 10.0;
+        context.rect(x - width / 2.0, y - height / 2.0, width, height);
+        context.stroke();
+    }
+
     context.begin_path(); // 确保开始新的路径
+    context.set_fill_style(&"white".into());
+    context.set_stroke_style(&"black".into());
+    context.set_line_width(2.0);
+
     let width = 80.0;
     let height = 30.0;
+    context.rect(x - width / 2.0, y - height / 2.0, width, height);
+    context.fill();
+    context.stroke();
 
     context.set_font("15px Arial");
     context.set_fill_style(&"black".into());
@@ -67,7 +98,6 @@ pub fn draw_curve(
     context.set_line_width(2.0);
 
     // 假设子节点是 80x30 大小
-    let node_width = 80.0;
     let node_height = 30.0;
 
     // 计算根节点的边缘坐标
@@ -105,9 +135,9 @@ pub fn render_mindmap(context: &CanvasRenderingContext2d, mindmap: &MindMap) {
     // 绘制根节点和子节点
     for node in &mindmap.nodes {
         if node.is_root {
-            draw_root_node(context, node.x, node.y, &node.name);
+            draw_root_node(context, node.x, node.y, &node.name, node.selected);
         } else {
-            draw_child_node(context, node.x, node.y, &node.name);
+            draw_child_node(context, node.x, node.y, &node.name, node.selected);
         }
     }
 }
